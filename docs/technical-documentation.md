@@ -159,8 +159,8 @@ are stored in the repository and loaded automatically, so the system can be re-c
 ## 6. Expected costs
 
 **Assumptions:** prices are approximate retail prices incl. VAT (November 2026); 1 EUR ≈ 25 CZK.
-**Personnel work is not counted as a cost.** Development, installation and support are done by
-the project team (or the school's IT staff), so only their effort in hours is listed and no wages are included.
+**Development is not counted as a cost**: it is done by the project team, so only the effort in hours is listed.
+**Installation and maintenance are counted** at €25/h (≈ 625 CZK/h, technician / IT staff).
 Two scenarios: a **pilot** with 3 classrooms and a **rollout** to 30 classrooms (one faculty building).
 
 ### 6.1 Initial costs: hardware and software
@@ -170,8 +170,8 @@ Two scenarios: a **pilot** with 3 classrooms and a **rollout** to 30 classrooms 
 | Sensor nodes (€51 per room) | €153 | €1,530 |
 | Software licences | €0 | €0 |
 | Server | €0 (existing university VM) | €0 (existing university VM) |
-| Installation (0.5 h per room, by the team) | €0 (1.5 h) | €0 (15 h) |
-| **Total** | **€153** | **€1,530** |
+| Installation (0.5 h per room × €25/h) | €38 | €375 |
+| **Total** | **€191** | **€1,905** |
 
 ### 6.2 Initial costs: development
 
@@ -197,17 +197,17 @@ The same software serves 3 or 300 classrooms.
 | Server | €100 | €100 | small cloud VM (2 vCPU, 4 GB RAM); €0 if the university VM is used |
 | Electricity | €3 | €33 | 0.5 W × 8,760 h ≈ 4.4 kWh per node × €0.25/kWh |
 | Spare parts reserve | €8 | €77 | 5 % of hardware per year |
-| Support and maintenance | €0 (≈ 1 h/month) | €0 (≈ 2 h/month) | updates, backups, checking devices; done by the team / school IT |
-| **Total per year** | **€111** | **€210** | |
+| Support and maintenance | €300 | €600 | 1 h / 2 h per month × €25/h: updates, backups, checking devices |
+| **Total per year** | **€411** | **€810** | |
 
 ### 6.4 Summary
 
 | | Pilot (3 rooms) | Rollout (30 rooms) |
 |---|---|---|
-| Initial costs (hardware + software) | **€153** (≈ 3,800 CZK) | **€1,530** (≈ 38,300 CZK) |
-| Operation, 1 year | **€111** (≈ 2,800 CZK) | **€210** (≈ 5,300 CZK) |
-| **Total in the first year** | **€264** (≈ 6,600 CZK) | **€1,740** (≈ 43,500 CZK) |
-| Operating cost per classroom per year | €37 | **€7** |
+| Initial costs (hardware + software + installation) | **€191** (≈ 4,800 CZK) | **€1,905** (≈ 47,600 CZK) |
+| Operation, 1 year | **€411** (≈ 10,300 CZK) | **€810** (≈ 20,300 CZK) |
+| **Total in the first year** | **€602** (≈ 15,100 CZK) | **€2,715** (≈ 67,900 CZK) |
+| Operating cost per classroom per year | €137 | **€27** |
 
 If the existing university VM is used instead of a cloud VM, the yearly cost drops by another €100.
 
