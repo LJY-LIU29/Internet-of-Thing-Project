@@ -90,7 +90,7 @@ node-red/data/flows.json    Node-RED flows (simulator, ingest)
 db/init.sql                 database schema + classrooms
 grafana/provisioning/       Grafana datasource + dashboard provider
 grafana/dashboards/         dashboard JSON (Classroom Air Quality)
-docs/                       technical documentation, hardware, costs         — to do
+docs/technical-documentation.md   name, technologies (HW/SW), costs, sustainability
 video/                      Remotion project for the video presentation       — to do
 ```
 
