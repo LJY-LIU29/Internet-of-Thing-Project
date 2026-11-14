@@ -158,33 +158,36 @@ are stored in the repository and loaded automatically, so the system can be re-c
 
 ## 6. Expected costs
 
-**Assumptions:** prices are approximate retail prices incl. VAT (November 2026);
-1 EUR ≈ 25 CZK; developer rate €25/h (≈ 625 CZK/h, junior developer). Two scenarios:
-a **pilot** with 3 classrooms and a **rollout** to 30 classrooms (one faculty building).
+**Assumptions:** prices are approximate retail prices incl. VAT (November 2026); 1 EUR ≈ 25 CZK.
+**Personnel work is not counted as a cost.** Development, installation and support are done by
+the project team (or the school's IT staff), so only their effort in hours is listed and no wages are included.
+Two scenarios: a **pilot** with 3 classrooms and a **rollout** to 30 classrooms (one faculty building).
 
 ### 6.1 Initial costs: hardware and software
 
 | Item | Pilot (3 rooms) | Rollout (30 rooms) |
 |---|---|---|
 | Sensor nodes (€51 per room) | €153 | €1,530 |
-| Installation (0.5 h per room) | €38 | €375 |
 | Software licences | €0 | €0 |
 | Server | €0 (existing university VM) | €0 (existing university VM) |
+| Installation (0.5 h per room, by the team) | €0 (1.5 h) | €0 (15 h) |
+| **Total** | **€153** | **€1,530** |
 
 ### 6.2 Initial costs: development
 
-| Task | Hours |
+| Task | Effort |
 |---|---|
-| Analysis and design | 16 |
-| Infrastructure (Docker, MQTT, PostgreSQL) | 16 |
-| Node-RED flows | 16 |
-| Grafana dashboard | 12 |
-| ESP32 firmware | 24 |
-| Testing and pilot installation | 16 |
-| Documentation and user guide | 20 |
-| **Total** | **120 h × €25 = €3,000** |
+| Analysis and design | 16 h |
+| Infrastructure (Docker, MQTT, PostgreSQL) | 16 h |
+| Node-RED flows | 16 h |
+| Grafana dashboard | 12 h |
+| ESP32 firmware | 24 h |
+| Testing and pilot installation | 16 h |
+| Documentation and user guide | 20 h |
+| **Total** | **120 h, €0** (done by the project team; no wages counted) |
 
-Development is a one-time cost: the same software serves 3 or 300 classrooms.
+All software used for development is free and open source, so development has no other costs.
+The same software serves 3 or 300 classrooms.
 
 ### 6.3 Operation for one year: licences, support, sustainability
 
@@ -193,18 +196,20 @@ Development is a one-time cost: the same software serves 3 or 300 classrooms.
 | Software licences | €0 | €0 | all open source |
 | Server | €100 | €100 | small cloud VM (2 vCPU, 4 GB RAM); €0 if the university VM is used |
 | Electricity | €3 | €33 | 0.5 W × 8,760 h ≈ 4.4 kWh per node × €0.25/kWh |
-| Support and maintenance | €300 | €600 | 1 h / 2 h per month: updates, backups, checking devices |
 | Spare parts reserve | €8 | €77 | 5 % of hardware per year |
-| **Total per year** | **€411** | **€809** | |
+| Support and maintenance | €0 (≈ 1 h/month) | €0 (≈ 2 h/month) | updates, backups, checking devices; done by the team / school IT |
+| **Total per year** | **€111** | **€210** | |
 
 ### 6.4 Summary
 
 | | Pilot (3 rooms) | Rollout (30 rooms) |
 |---|---|---|
-| Initial costs (hardware + installation + development) | **€3,191** (≈ 79,800 CZK) | **€4,905** (≈ 122,600 CZK) |
-| Operation, 1 year | **€411** (≈ 10,300 CZK) | **€809** (≈ 20,200 CZK) |
-| **Total in the first year** | **€3,602** | **€5,714** |
-| Operating cost per classroom per year | €137 | **€27** |
+| Initial costs (hardware + software) | **€153** (≈ 3,800 CZK) | **€1,530** (≈ 38,300 CZK) |
+| Operation, 1 year | **€111** (≈ 2,800 CZK) | **€210** (≈ 5,300 CZK) |
+| **Total in the first year** | **€264** (≈ 6,600 CZK) | **€1,740** (≈ 43,500 CZK) |
+| Operating cost per classroom per year | €37 | **€7** |
+
+If the existing university VM is used instead of a cloud VM, the yearly cost drops by another €100.
 
 For comparison: 30 commercial Aranet4 Home devices cost about €5,970 for the hardware alone,
 and still do not give a central overview of all classrooms.
