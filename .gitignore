@@ -1,0 +1,17 @@
+# secrets
+.env
+
+# course materials / local scratch (not part of the project)
+*.zip
+_local/
+
+# Node-RED runtime files (only flows.json is versioned)
+node-red/data/*
+!node-red/data/flows.json
+
+# Node / Remotion
+node_modules/
+video/out/
+
+# OS
+.DS_Store

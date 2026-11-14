@@ -1,0 +1,267 @@
+[
+    {
+        "id": "a1b2c3d4e5f60001",
+        "type": "tab",
+        "label": "1 - Sensor simulator",
+        "disabled": false,
+        "info": "Simulated classroom sensors. Replaced by real ESP32 + SCD41 devices in production."
+    },
+    {
+        "id": "a1b2c3d4e5f60002",
+        "type": "tab",
+        "label": "2 - Ingest & classify",
+        "disabled": false,
+        "info": "MQTT -> validate -> classify by CO2 thresholds -> PostgreSQL."
+    },
+    {
+        "id": "a1b2c3d4e5f61001",
+        "type": "comment",
+        "z": "a1b2c3d4e5f60001",
+        "name": "Every 10 s: one reading per classroom -> MQTT classroom/<room>/telemetry",
+        "info": "",
+        "x": 330,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "a1b2c3d4e5f61002",
+        "type": "inject",
+        "z": "a1b2c3d4e5f60001",
+        "name": "Every 10 s",
+        "props": [],
+        "repeat": "10",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "2",
+        "topic": "",
+        "x": 130,
+        "y": 120,
+        "wires": [
+            [
+                "a1b2c3d4e5f61003"
+            ]
+        ]
+    },
+    {
+        "id": "a1b2c3d4e5f61003",
+        "type": "function",
+        "z": "a1b2c3d4e5f60001",
+        "name": "Simulate classrooms",
+        "func": "// Simulates one CO2 / temperature / humidity sensor per classroom.\n// In the real deployment an ESP32 + Sensirion SCD41 publishes the same JSON\n// to the same MQTT topic, so nothing after the broker has to change.\n//\n// The scenario is accelerated for the demo: CO2 rises while people are in\n// the room; at 1500 ppm someone opens the window and CO2 falls back to 600 ppm.\n\nconst ROOMS = [\n    { id: 'C21',  rise: 25 },   // average ppm increase per tick (10 s)\n    { id: 'E101', rise: 35 },   // big lecture hall -> fastest rise\n    { id: 'D105', rise: 15 },\n];\nconst WINDOW_OPEN_AT  = 1500;   // ppm\nconst WINDOW_CLOSE_AT = 600;    // ppm\n\nconst state = context.get('state') || {};\n\nfor (const room of ROOMS) {\n    const s = state[room.id] || {\n        co2: 450 + Math.round(Math.random() * 400),\n        temp: 21.5 + Math.random(),\n        hum: 40 + Math.random() * 10,\n        windowOpen: false,\n    };\n\n    if (s.windowOpen) {\n        s.co2 -= 60 + Math.round(Math.random() * 20);\n        s.temp -= 0.1;\n        if (s.co2 <= WINDOW_CLOSE_AT) s.windowOpen = false;\n    } else {\n        s.co2 += Math.round(room.rise * (0.5 + Math.random()));\n        s.temp += 0.03 + (Math.random() - 0.5) * 0.05;\n        if (s.co2 >= WINDOW_OPEN_AT) s.windowOpen = true;\n    }\n\n    s.co2  = Math.max(420, s.co2);\n    s.temp = Math.min(26, Math.max(19, s.temp));\n    s.hum  = Math.min(65, Math.max(30, s.hum + (Math.random() - 0.5) * 0.6));\n    state[room.id] = s;\n\n    node.send({\n        topic: `classroom/${room.id}/telemetry`,\n        payload: {\n            room: room.id,\n            co2: s.co2,\n            temp: +s.temp.toFixed(1),\n            hum: +s.hum.toFixed(1),\n        },\n    });\n}\n\ncontext.set('state', state);\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 120,
+        "wires": [
+            [
+                "a1b2c3d4e5f61004",
+                "a1b2c3d4e5f61005"
+            ]
+        ]
+    },
+    {
+        "id": "a1b2c3d4e5f61004",
+        "type": "mqtt out",
+        "z": "a1b2c3d4e5f60001",
+        "name": "Publish telemetry",
+        "topic": "",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a1b2c3d4e5f60100",
+        "x": 570,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "a1b2c3d4e5f61005",
+        "type": "debug",
+        "z": "a1b2c3d4e5f60001",
+        "name": "Simulated reading",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 570,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "a1b2c3d4e5f62001",
+        "type": "comment",
+        "z": "a1b2c3d4e5f60002",
+        "name": "MQTT classroom/+/telemetry -> classify (good / warning / critical) -> measurements table",
+        "info": "",
+        "x": 380,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "a1b2c3d4e5f62002",
+        "type": "mqtt in",
+        "z": "a1b2c3d4e5f60002",
+        "name": "Classroom sensors",
+        "topic": "classroom/+/telemetry",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "a1b2c3d4e5f60100",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 120,
+        "wires": [
+            [
+                "a1b2c3d4e5f62003"
+            ]
+        ]
+    },
+    {
+        "id": "a1b2c3d4e5f62003",
+        "type": "function",
+        "z": "a1b2c3d4e5f60002",
+        "name": "Validate & classify",
+        "func": "// Validates one sensor message and classifies the air quality.\n//   CO2 < 1000 ppm      -> good\n//   CO2 1000-1400 ppm   -> warning  (ventilation recommended)\n//   CO2 > 1400 ppm      -> critical (ventilate now)\n\nconst room = msg.topic.split('/')[1];\nconst p = msg.payload;\n\nconst valid = p && typeof p === 'object' &&\n    [p.co2, p.temp, p.hum].every(v => typeof v === 'number' && Number.isFinite(v));\nif (!valid) {\n    node.warn(`Invalid payload on ${msg.topic}: ${JSON.stringify(p)}`);\n    return null;\n}\n\nconst status = p.co2 < 1000 ? 'good' : p.co2 <= 1400 ? 'warning' : 'critical';\n\nconst colour = { good: 'green', warning: 'yellow', critical: 'red' }[status];\nnode.status({ fill: colour, shape: 'dot', text: `${room}: ${p.co2} ppm (${status})` });\n\nmsg.payload.status = status;\nmsg.params = [room, Math.round(p.co2), p.temp, p.hum, status];\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 120,
+        "wires": [
+            [
+                "a1b2c3d4e5f62004",
+                "a1b2c3d4e5f62005"
+            ]
+        ]
+    },
+    {
+        "id": "a1b2c3d4e5f62004",
+        "type": "postgresql",
+        "z": "a1b2c3d4e5f60002",
+        "name": "Save measurement",
+        "query": "INSERT INTO measurements (room_id, co2, temp, hum, status)\nVALUES ($1, $2, $3, $4, $5);",
+        "postgreSQLConfig": "a1b2c3d4e5f60101",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 590,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a1b2c3d4e5f62005",
+        "type": "debug",
+        "z": "a1b2c3d4e5f60002",
+        "name": "Classified reading",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 590,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "a1b2c3d4e5f62006",
+        "type": "catch",
+        "z": "a1b2c3d4e5f60002",
+        "name": "Errors",
+        "scope": null,
+        "uncaught": false,
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "a1b2c3d4e5f62007"
+            ]
+        ]
+    },
+    {
+        "id": "a1b2c3d4e5f62007",
+        "type": "debug",
+        "z": "a1b2c3d4e5f60002",
+        "name": "Flow / DB errors",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 340,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "a1b2c3d4e5f60100",
+        "type": "mqtt-broker",
+        "name": "Mosquitto",
+        "broker": "${MQTT_HOST}",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "a1b2c3d4e5f60101",
+        "type": "postgreSQLConfig",
+        "name": "PostgreSQL",
+        "host": "PGHOST",
+        "hostFieldType": "env",
+        "port": "PGPORT",
+        "portFieldType": "env",
+        "database": "PGDATABASE",
+        "databaseFieldType": "env",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "node-red",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "",
+        "userFieldType": "env",
+        "userEnv": "PGUSER",
+        "password": "",
+        "passwordFieldType": "env",
+        "passwordEnv": "PGPASSWORD"
+    }
+]
