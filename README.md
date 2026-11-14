@@ -31,6 +31,18 @@ In a real deployment the simulator is replaced by an ESP32 + Sensirion SCD41 in 
 publishing the same JSON to the same topic. The rest of the system stays the same.
 The hardware is only part of the proposal (see `docs/`); the running demo uses simulated sensors.
 
+## Dashboard
+
+![Grafana dashboard](docs/images/dashboard.png)
+
+- **Air quality now**: traffic light per classroom (latest reading)
+- **Current readings**: latest CO₂, temperature, humidity per room
+- **CO₂ concentration**: history with the 1000 / 1400 ppm limits as dashed lines
+- **Temperature / Relative humidity**: history per room
+- **Time needing ventilation**: share of readings with CO₂ ≥ 1000 ppm in the selected period
+
+Tip: add `?kiosk` to the dashboard URL for a full-screen view (e.g. a screen in the hallway).
+
 ## Quick start
 
 Requirements: Docker Desktop (or Docker Engine + Compose v2).
@@ -43,7 +55,7 @@ docker compose up -d --build
 | Service    | URL                     | Login                                   |
 |------------|-------------------------|-----------------------------------------|
 | Node-RED   | http://localhost:1880   | none (bound to localhost only)          |
-| Grafana    | http://localhost:3000   | `GRAFANA_ADMIN_USER` / `_PASSWORD` from `.env` |
+| Grafana    | http://localhost:3000   | opens the dashboard without login (read-only); admin: `GRAFANA_ADMIN_USER` / `_PASSWORD` from `.env` |
 | PostgreSQL | `localhost:5432`        | `POSTGRES_USER` / `_PASSWORD` from `.env` |
 | MQTT       | `localhost:1883`        | anonymous                               |
 
@@ -76,7 +88,8 @@ mosquitto/mosquitto.conf    MQTT broker config
 node-red/Dockerfile         Node-RED image + node-red-contrib-postgresql
 node-red/data/flows.json    Node-RED flows (simulator, ingest)
 db/init.sql                 database schema + classrooms
-grafana/                    Grafana provisioning (datasource, dashboard)      — to do
+grafana/provisioning/       Grafana datasource + dashboard provider
+grafana/dashboards/         dashboard JSON (Classroom Air Quality)
 docs/                       technical documentation, hardware, costs         — to do
 video/                      Remotion project for the video presentation       — to do
 ```
