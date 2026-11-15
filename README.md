@@ -251,6 +251,7 @@ IOT/
 │       └── classroom.json      the "Classroom Air Quality" dashboard
 └── docs/
     ├── technical-documentation.md   solution name, technologies, hardware, costs, sustainability
+    ├── technical-documentation.pdf  the same document as PDF (for Moodle)
     └── images/dashboard.png
 ```
 
@@ -400,7 +401,7 @@ Run the commands from **Git Bash**, or open a shell in the container first:
 ## 9. Documentation and team workflow
 
 - **Technical documentation** (name, technologies, hardware proposal, costs, sustainability):
-  [`docs/technical-documentation.md`](docs/technical-documentation.md)
+  [`docs/technical-documentation.md`](docs/technical-documentation.md) (PDF: [`docs/technical-documentation.pdf`](docs/technical-documentation.pdf))
 - **Never commit `.env`** or any password; the repository is public. `.gitignore` already excludes it.
 - Work on a branch and merge into `main` when the change works:
   ```bash

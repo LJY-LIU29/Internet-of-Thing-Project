@@ -1,7 +1,7 @@
 # Smart Classroom Ventilation — Technical Documentation
 
-**Course:** ETEW5E Internet of Things, Czech University of Life Sciences Prague (ZS 2026/27)
-**Team:** `<Name 1>`, `<Name 2>`, `<Name 3>`, `<Name 4>`, `<Name 5>`
+**Course:** ETEW5E Internet of Things, Czech University of Life Sciences Prague (ZS 2026/27)\
+**Team:** Zongyuan Chi, Lijie Luo, Jingyi Liu, Wentao Ma\
 **Repository:** https://github.com/witold-andelie/IOT
 
 ---
@@ -232,6 +232,6 @@ and still do not give a central overview of all classrooms.
 ## 8. References
 
 1. Satish, U. et al. (2012). *Is CO₂ an Indoor Pollutant? Direct Effects of Low-to-Moderate CO₂ Concentrations on Human Decision-Making Performance.* Environmental Health Perspectives 120(12), 1671–1677. https://pmc.ncbi.nlm.nih.gov/articles/PMC3548304
-2. Státní fond životního prostředí ČR (2023). *Metodický pokyn pro návrh větrání škol.* https://www.sfzp.cz/files/documents/storage/2023/07/18/1689667444_Metodický%20pokyn%20pro%20návrh%20větrání%20škol.pdf
+2. Státní fond životního prostředí ČR (2023). *Metodický pokyn pro návrh větrání škol.* [sfzp.cz (PDF)](https://www.sfzp.cz/files/documents/storage/2023/07/18/1689667444_Metodický%20pokyn%20pro%20návrh%20větrání%20škol.pdf)
 3. Sensirion SCD41 product information. https://sensirion.com/products/catalog/SCD41
 4. Node-RED: https://nodered.org · Eclipse Mosquitto: https://mosquitto.org · PostgreSQL: https://www.postgresql.org · Grafana: https://grafana.com
