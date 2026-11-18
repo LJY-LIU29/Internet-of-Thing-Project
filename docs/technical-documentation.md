@@ -231,53 +231,47 @@ and still do not give a central overview of all classrooms.
 
 ## 8. Conclusion
 
-The **Smart Classroom Ventilation** project demonstrates that a complete, production-ready IoT system for indoor air quality monitoring can be built with **zero licence costs**, open-source software, and commodity hardware — all orchestrated with a single Docker Compose command.
+### 8.1 Summary of Expected Results
 
-### What was delivered
+The Smart Classroom Ventilation project demonstrates that a complete, production-ready IoT system for indoor air quality monitoring can be built with **zero licence costs**, open-source software, and commodity hardware — all orchestrated with a single Docker Compose command.
 
-| Deliverable | Status | Notes |
-|---|---|---|
-| **Sensor layer (proposed)** | Designed & costed | ESP32-C3 + SCD41, €51/room; firmware-ready architecture |
-| **Communication layer** | Working | MQTT over Wi-Fi (Mosquitto), standard topics, TLS-ready |
-| **Middleware & logic** | Working | Node-RED: validation, classification (good/warning/critical), persistence, alert webhook |
-| **Data layer** | Working | PostgreSQL with indexed schema, auto-initialised from SQL |
-| **Presentation layer** | Working | Grafana dashboard: traffic lights, history charts, ventilation-time statistics |
-| **Deployment** | Working | Docker Compose; reproducible on any Linux VM or laptop |
-| **Documentation** | Complete | Technical doc, runbook, architecture diagrams, cost model |
+**What the system delivers today:**
 
-### Key achievements
+- A working data pipeline from sensor to dashboard: simulated sensors publish CO₂, temperature, and humidity every 10 seconds over MQTT; Node-RED validates, classifies (good/warning/critical), and stores readings in PostgreSQL; Grafana visualises everything as real-time traffic lights, history charts, and ventilation-time statistics.
+- A hardware design ready to build: ESP32-C3 + Sensirion SCD41 + LED ring at **€51 per classroom**, with firmware architecture that sends identical MQTT payloads so the simulator can be swapped for real devices without changing the backend.
+- A self-hosted, standards-based stack: MQTT for transport, SQL for storage, Docker for deployment — no vendor cloud, no lock-in, no recurring fees.
+- A cost model that scales: **€51/room hardware + €0 software** versus €199+/room for commercial devices that still lack a central overview.
 
-1. **Cost breakthrough:** €51/room hardware + €0 software licences vs. €199+/room for commercial equivalents with no central view.
-2. **Self-hosted sovereignty:** Data never leaves the school's infrastructure; no vendor cloud, no lock-in.
-3. **Standard, extensible stack:** MQTT + SQL means any compliant sensor or third-party system can integrate later.
-3. **Immediate actionable insight:** Teachers see a traffic light *in real time*; facility managers get ventilation-time statistics for investment decisions.
-4. **Sustainable by design:** Self-calibrating sensors, OTA firmware updates, ~4 kWh/year/node, reproducible-as-code deployment.
+**Validation:** The running demo proves the full path — Sensor → MQTT → Node-RED → PostgreSQL → Grafana — with live data classified against Czech-recommended thresholds (1,000 / 1,400 ppm) and visualised every 10 seconds, fully automated.
 
-### Validation
+### 8.2 Recommendations
 
-The running demo simulates three classrooms with realistic CO₂ dynamics (occupancy-driven rise, window-opening fall) and proves the full data path:
+**For immediate next steps (pilot phase):**
 
-```
-Sensor → MQTT → Node-RED → PostgreSQL → Grafana
-```
+1. **Build and test 3–5 prototype sensor nodes** (≈1 week). The components are standard, libraries are mature, and the firmware architecture is defined.
+2. **Harden the communication layer**: add per-device MQTT credentials and enable TLS on Mosquitto (≈4 hours — both are natively supported).
+3. **Integrate university authentication** for Grafana via OIDC/LDAP (≈1 day) so staff can log in with existing credentials.
 
-Every 10 seconds, live data flows through the stack, is classified against Czech-recommended thresholds (1,000 / 1,400 ppm), stored, and visualised — with zero manual intervention.
+**For the pilot semester:**
 
-### Path to production
+4. **Deploy in 3 real classrooms** and run for one semester. The main risk is logistical (installation, power, Wi-Fi access), not technical — the software stack is stable.
+5. **Collect feedback** from teachers (traffic-light clarity) and facility managers (ventilation-time statistics) to refine thresholds and dashboard layout.
 
-| Step | Effort | Risk |
-|---|---|---|
-| Build & test 3–5 prototype sensor nodes | 1 week | Low (standard components, community libraries) |
-| Add per-device MQTT credentials + TLS | 4 hours | Low (Mosquitto supports both) |
-| Integrate university SSO for Grafana | 1 day | Low (Grafana supports OIDC/LDAP) |
-| Pilot in 3 real classrooms (1 semester) | 1 semester | Medium (logistics, not technical) |
-| Rollout to faculty building (30 rooms) | 2–4 weeks | Low (identical provisioning) |
+**For campus-wide rollout:**
 
-### Final assessment
+6. **Scale to 30+ rooms** using identical provisioning — each new classroom needs only a sensor node and one row in the `rooms` table. Grafana auto-discovers it.
+7. **Extend alerting** in Node-RED: add e-mail, Microsoft Teams, or webhook notifications for critical CO₂ levels (≈30 minutes per channel).
+8. **Leverage the data** for timetable planning: identify rooms that consistently need ventilation and avoid scheduling long lessons there.
 
-**The system meets all requirements for a university pilot and is architecturally ready for campus-wide rollout.** It solves a real, documented problem (CO₂-induced cognitive decline) with a solution that is affordable, auditable, and owned entirely by the institution. The only remaining step is physical hardware assembly — the software platform is complete, tested, and deployable today.
+**Long-term sustainability:**
+
+- The SCD41 self-calibrates whenever the room is aired; firmware updates are OTA over Wi-Fi.
+- Energy use is ~4 kWh/year per node; the entire software stack runs on a modest VM.
+- All components are open source and defined as code — the system can be recreated on any infrastructure at any time.
 
 ---
+
+**Final assessment:** The software platform is complete, tested, and deployable today. It solves a real, documented problem (CO₂-induced cognitive decline) with a solution that is affordable, auditable, and fully owned by the institution. The only remaining step to production is physical hardware assembly.
 
 ## 9. References
 
